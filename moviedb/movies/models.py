@@ -12,10 +12,25 @@ GENRE_CHOICES = (
 )
 
 
+class DirectorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(directed_movies__isnull=True)
+
+
+class ActorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(character_played__isnull=True)
+
+
 class Artist(models.Model):
     name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     bio = models.CharField(max_length=300)
+    directors = DirectorManager()
+    objects = models.Manager()
+
+    def __str__(self):
+        return self.name
 
 
 class Character(models.Model):
@@ -23,9 +38,12 @@ class Character(models.Model):
     actor = models.ForeignKey('movies.Artist',
                               related_name='character_played',
                               on_delete=models.CASCADE)
-    movie = models.OneToOneField('movies.Movie',
-                                 related_name='characters',
-                                 on_delete=models.CASCADE)
+    movie = models.ForeignKey('movies.Movie',
+                              related_name='characters',
+                              on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Movie(models.Model):
