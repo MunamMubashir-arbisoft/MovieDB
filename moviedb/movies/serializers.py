@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, Artist, Character
+from .models import Movie, Artist, Character, Genre
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -26,15 +26,22 @@ class CharacterSerializer(serializers.ModelSerializer):
             pass
 
 
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ['name']
+
+
 class MovieSerializer(serializers.ModelSerializer):
-    characters = CharacterSerializer(many=True)
+    characters = CharacterSerializer(many=True, read_only=True)
     poster_image = serializers.ImageField(required=False, allow_null=True)
     slug = serializers.SlugField(read_only=True)
     director = ArtistSerializer(many=True)
+    genre = GenreSerializer()
 
     class Meta:
         model = Movie
-        fields = ['slug', 'title', 'plot', 'release_date', 'runtime', 'poster_image',
+        fields = ['id', 'slug', 'title', 'plot', 'release_date', 'runtime', 'poster_image',
                   'language', 'genre', 'director', 'characters']
 
     def __init__(self, *args, **kwargs):
@@ -45,3 +52,20 @@ class MovieSerializer(serializers.ModelSerializer):
                                                                              queryset=Artist.objects.all())
         except KeyError:
             pass
+
+    def create(self, validated_data):
+        genre_data = validated_data.pop('genre')
+        director_data = validated_data.pop('director')
+        genre, _ = Genre.objects.get_or_create(**genre_data)
+        instance = Movie.objects.create(genre=genre, **validated_data)
+        instance.director.set(director_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        genre_data = validated_data.pop('genre')
+        genre, _ = Genre.objects.get_or_create(**genre_data)
+        director_data = validated_data.pop('director')
+        instance = super().update(instance, validated_data)
+        instance.genre = genre
+        instance.director.set(director_data)
+        return instance
