@@ -10,14 +10,16 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class CharacterSerializer(serializers.ModelSerializer):
     actor = ArtistSerializer()
-    movie = serializers.SlugRelatedField(slug_field='title', read_only=True)
+    movie = serializers.SlugRelatedField(slug_field='title',
+                                         read_only=True)
 
     class Meta:
         model = Character
         fields = ['name', 'actor', 'movie']
 
     def __init__(self, *args, **kwargs):
-        super(CharacterSerializer, self).__init__(*args, **kwargs)
+        super(CharacterSerializer, self).__init__(*args,
+                                                  **kwargs)
         try:
             if self.context['request'].method in ['POST', 'PUT']:
                 self.fields['actor'] = serializers.PrimaryKeyRelatedField(queryset=Artist.objects.all())
@@ -33,8 +35,10 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    characters = CharacterSerializer(many=True, read_only=True)
-    poster_image = serializers.ImageField(required=False, allow_null=True)
+    characters = CharacterSerializer(many=True,
+                                     read_only=True)
+    poster_image = serializers.ImageField(required=False,
+                                          allow_null=True)
     slug = serializers.SlugField(read_only=True)
     director = ArtistSerializer(many=True)
     genre = GenreSerializer()
@@ -45,7 +49,8 @@ class MovieSerializer(serializers.ModelSerializer):
                   'language', 'genre', 'director', 'characters']
 
     def __init__(self, *args, **kwargs):
-        super(MovieSerializer, self).__init__(*args, **kwargs)
+        super(MovieSerializer, self).__init__(*args,
+                                              **kwargs)
         try:
             if self.context['request'].method in ['POST', 'PUT']:
                 self.fields['director'] = serializers.PrimaryKeyRelatedField(many=True,
@@ -57,7 +62,8 @@ class MovieSerializer(serializers.ModelSerializer):
         genre_data = validated_data.pop('genre')
         director_data = validated_data.pop('director')
         genre, _ = Genre.objects.get_or_create(**genre_data)
-        instance = Movie.objects.create(genre=genre, **validated_data)
+        instance = Movie.objects.create(genre=genre,
+                                        **validated_data)
         instance.director.set(director_data)
         return instance
 
@@ -65,7 +71,8 @@ class MovieSerializer(serializers.ModelSerializer):
         genre_data = validated_data.pop('genre')
         genre, _ = Genre.objects.get_or_create(**genre_data)
         director_data = validated_data.pop('director')
-        instance = super().update(instance, validated_data)
+        instance = super().update(instance,
+                                  validated_data)
         instance.genre = genre
         instance.director.set(director_data)
         return instance
