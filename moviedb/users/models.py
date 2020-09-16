@@ -11,7 +11,6 @@ class Account(AbstractUser):
     followed_artists = models.ManyToManyField('movies.Artist',
                                               related_name='users_following',
                                               blank=True)
-    objects = models.Manager()
 
     def __str__(self):
         return self.username
