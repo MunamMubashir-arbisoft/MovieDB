@@ -73,6 +73,7 @@ class MovieSerializer(serializers.ModelSerializer):
         director_data = validated_data.pop('director')
         instance = super().update(instance,
                                   validated_data)
-        instance.genre = genre
         instance.director.set(director_data)
+        instance.genre = genre
+        instance.save()
         return instance

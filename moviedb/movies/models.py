@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
 
-
 GENRE_CHOICES = (
     ('action', 'Action'),
     ('adventure', 'Adventure'),
@@ -57,7 +56,6 @@ class Character(models.Model):
                               on_delete=models.CASCADE)
     objects = models.Manager()
 
-
     def __str__(self):
         return self.name
 
@@ -96,6 +94,11 @@ class Movie(models.Model):
                                 max_length=50)
     objects = models.Manager()
 
+    def get_all_actors(self):
+        actors = [character.actor for character in self.characters.all()]
+        return actors
+
+
     def __str__(self):
         return self.title
 
@@ -108,6 +111,8 @@ class Movie(models.Model):
     def update(self, instance, validated_data):
         genre = validated_data.pop('genre')
         instance = super().update(instance, validated_data)
+        instance.genre = genre
+        instance.save()
         return instance
 
     def save(self, *args, **kwargs):
