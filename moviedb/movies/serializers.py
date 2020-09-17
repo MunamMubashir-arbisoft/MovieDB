@@ -10,12 +10,11 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class CharacterSerializer(serializers.ModelSerializer):
     actor = ArtistSerializer()
-    movie = serializers.SlugRelatedField(slug_field='title',
-                                         read_only=True)
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all(), write_only=True)
 
     class Meta:
         model = Character
-        fields = ['name', 'actor', 'movie']
+        fields = ['id', 'name', 'actor', 'movie']
 
     def __init__(self, *args, **kwargs):
         super(CharacterSerializer, self).__init__(*args,
@@ -23,7 +22,7 @@ class CharacterSerializer(serializers.ModelSerializer):
         try:
             if self.context['request'].method in ['POST', 'PUT']:
                 self.fields['actor'] = serializers.PrimaryKeyRelatedField(queryset=Artist.objects.all())
-                self.fields['movie'] = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+
         except KeyError:
             pass
 

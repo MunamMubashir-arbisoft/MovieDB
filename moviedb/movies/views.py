@@ -1,4 +1,6 @@
 from rest_framework import viewsets, filters
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Movie, Artist, Character
@@ -28,4 +30,14 @@ class CharacterViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     queryset = Character.objects.all()
     serializer_class = CharacterSerializer
+
+
+class MovieCharactersAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = CharacterSerializer
+
+    def get(self, request, movie_id, format=None):
+        characters_for_movie = Character.objects.filter(movie__id=movie_id).distinct()
+        serializer = self.serializer_class(characters_for_movie, many=True)
+        return Response(serializer.data)
 
