@@ -14,7 +14,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['username', 'password', 'followed_genres', 'followed_artists']
+        fields = ['id', 'username', 'password', 'followed_genres', 'followed_artists']
 
     def create(self, validated_data):
         username = validated_data.get('username', None)
@@ -66,4 +66,3 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('User is disabled.')
 
         return {'user': user}
-
