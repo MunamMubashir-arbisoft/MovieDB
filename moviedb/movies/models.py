@@ -89,6 +89,7 @@ class Movie(models.Model):
                               blank=True)
     director = models.ManyToManyField('movies.Artist',
                                       related_name='directed_movies',
+                                      editable=True,
                                       blank=True)
     language = models.CharField(choices=LANGUAGE_CHOICES,
                                 max_length=50)
@@ -97,7 +98,6 @@ class Movie(models.Model):
     def get_all_actors(self):
         actors = [character.actor for character in self.characters.all()]
         return actors
-
 
     def __str__(self):
         return self.title

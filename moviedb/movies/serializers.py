@@ -21,8 +21,9 @@ class CharacterSerializer(serializers.ModelSerializer):
                                                   **kwargs)
         try:
             if self.context['request'].method in ['POST', 'PUT']:
-                self.fields['actor'] = serializers.PrimaryKeyRelatedField(queryset=Artist.objects.all())
-
+                self.fields['actor'] = serializers.PrimaryKeyRelatedField(
+                    queryset=Artist.objects.all()
+                )
         except KeyError:
             pass
 
@@ -52,8 +53,10 @@ class MovieSerializer(serializers.ModelSerializer):
                                               **kwargs)
         try:
             if self.context['request'].method in ['POST', 'PUT']:
-                self.fields['director'] = serializers.PrimaryKeyRelatedField(many=True,
-                                                                             queryset=Artist.objects.all())
+                self.fields['director'] = serializers.PrimaryKeyRelatedField(
+                    many=True,
+                    queryset=Artist.objects.all()
+                )
         except KeyError:
             pass
 
@@ -64,6 +67,7 @@ class MovieSerializer(serializers.ModelSerializer):
         instance = Movie.objects.create(genre=genre,
                                         **validated_data)
         instance.director.set(director_data)
+        instance.save()
         return instance
 
     def update(self, instance, validated_data):
