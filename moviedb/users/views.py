@@ -4,13 +4,19 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 from .serializers import LoginSerializer, AccountSerializer
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return
+
+
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
     serializer_class = LoginSerializer
 
     def post(self, request):
@@ -24,7 +30,7 @@ class LoginAPIView(APIView):
 
 class LogoutAPIView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
 
     def post(self, request):
         logout(request)
@@ -33,7 +39,7 @@ class LogoutAPIView(APIView):
 
 class RegisterAPIView(CreateAPIView):
     serializer_class = AccountSerializer
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (CsrfExemptSessionAuthentication,)
     permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):

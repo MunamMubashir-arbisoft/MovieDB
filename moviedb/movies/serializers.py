@@ -37,15 +37,15 @@ class GenreSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     characters = CharacterSerializer(many=True,
                                      read_only=True)
-    poster_image = serializers.ImageField(required=False,
-                                          allow_null=True)
+    poster_image_url = serializers.URLField(required=False,
+                                            allow_null=True)
     slug = serializers.SlugField(read_only=True)
     director = ArtistSerializer(many=True)
     genre = GenreSerializer()
 
     class Meta:
         model = Movie
-        fields = ['id', 'slug', 'title', 'plot', 'release_date', 'runtime', 'poster_image',
+        fields = ['id', 'slug', 'title', 'plot', 'release_date', 'runtime', 'poster_image_url',
                   'language', 'genre', 'director', 'characters']
 
     def __init__(self, *args, **kwargs):

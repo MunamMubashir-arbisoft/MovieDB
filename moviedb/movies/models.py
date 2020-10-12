@@ -1,5 +1,11 @@
 from django.db import models
 from django.utils.text import slugify
+from django.core.files import File
+
+from urllib.request import urlopen
+
+from tempfile import NamedTemporaryFile
+
 
 GENRE_CHOICES = (
     ('action', 'Action'),
@@ -81,7 +87,8 @@ class Movie(models.Model):
     release_date = models.DateField()
     plot = models.TextField(max_length=500)
     runtime = models.IntegerField()
-    poster_image = models.ImageField()
+    poster_image = models.ImageField(upload_to="movie-poster/", blank=True, null=True)
+    poster_image_url = models.URLField(blank=True, null=True)
     genre = models.ForeignKey('movies.Genre',
                               related_name='movies',
                               on_delete=models.SET_NULL,
@@ -118,4 +125,12 @@ class Movie(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
         super(Movie, self).save(*args, **kwargs)
+
+        if self.poster_image_url and not self.poster_image:
+            img_temp = NamedTemporaryFile(delete=True)
+            img_temp.write(urlopen(self.poster_image_url).read())
+            img_temp.flush()
+            self.poster_image.save(f"image_{self.pk}_{self.slug}", File(img_temp))
+
