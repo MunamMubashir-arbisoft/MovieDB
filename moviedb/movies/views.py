@@ -13,7 +13,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    lookup_field = 'slug'
+    lookup_field = 'id'
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
