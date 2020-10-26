@@ -1,18 +1,14 @@
-the-lab
-=======
+MovieDB API is a RESTful web service that provides movie information.
 
-The purpose of this repo is to help the team lead and his team member in training and evaluating newly hired developers especially fresh grads. Code written by newbies for training/practice will be checked in here and reviewed by their respective team leads. All feedback must be in written on github.
+Interacting with the MovieDB API, a user will be able to:
 
-## Getting Started
-
-1. Clone this repo on your local machine.
-1. Create a new branch with your name like *alisufian-master* (lower case).
-1. Push this empty branch.
-1. For every assigned task create a new branch e.g. alisufian-borjanspider.
-1. When the task is complete make sure the code confirms to [pep8](https://www.python.org/dev/peps/pep-0008/).
-1. Push the code and create a pull request against your *name-master* branch.
-1. Specify the title of the PR as *name-task* e.g. *Ali Sufian - Weatherman* so its easy to find in the list.
-1. In case you [mess](http://ohshitgit.com/) up the repo.
-
-Do not add log files, temp files, data files etc.
-**Do not merge/push anything into master branch**.
+-Get the details of a particular movie.
+-Get the details of an actor.
+-Get the details of a director.
+-Get all the characters of a movie
+-Follow an actor or director and any time a new movie associated with that person is released, the user is notified.
+-A user may also follow a genre to get notified if a new movie is added in this particular genre.
+-Get all the notifications of a user
+-Search for a movie.
+-Filter movies based on genre.
+-Search for a person i.e actor, director, producer.
